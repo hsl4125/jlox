@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 
 public class GenerateAst {
-    private static String Tab = "   ";
-    private static String Tab2 = "      ";
-    private static String Tab3 = "          ";
+    private static final String Tab = "   ";
+    private static final String Tab2 = Tab + Tab;
+    private static final String Tab3 = Tab2 + Tab;
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
