@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>,
         Stmt.Visitor<Void> {
-    private final Environment environment = new Environment();
+    private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
 
@@ -156,6 +156,25 @@ public class Interpreter implements Expr.Visitor<Object>,
 
     private void execute(Stmt statement){
         statement.accept(this);
+    }
+
+    private void executeBlock(List<Stmt> statements, Environment env) {
+        Environment previous = this.environment;
+        try {
+            this.environment = env;
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
+
+        } finally {
+            this.environment = previous;
+        }
+    }
+
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
     }
 
     @Override
