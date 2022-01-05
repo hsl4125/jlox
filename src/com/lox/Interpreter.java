@@ -1,12 +1,10 @@
 package com.lox;
 
-import com.sun.tools.doclint.Env;
-
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>,
         Stmt.Visitor<Void> {
-    private Environment environment = new Environment();
+    private final Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
 
