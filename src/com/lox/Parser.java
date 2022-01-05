@@ -406,7 +406,7 @@ public class Parser {
                 case FOR:
                 case IF:
                 case WHILE:
-                //case PRINT:
+                case PRINT:
                 case RETURN:
                     return;
             }
