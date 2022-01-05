@@ -18,11 +18,17 @@ public class GenerateAst {
         }
 
         String outputDir = args[0];
+
         defineAst(outputDir, "Expr", Arrays.asList(
                 "Binary : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal : Object value",
                 "Unary : Token operator, Expr right"
+        ));
+
+        defineAst(outputDir, "Stmt", Arrays.asList(
+                "Expression : Expr expression",
+                "Print : Expr expression"
         ));
     }
 
@@ -59,8 +65,7 @@ public class GenerateAst {
         for (String type : types) {
             String typeName = type.split(":")[0].trim();
             writer.println(Tab2 + "R visit" + typeName + baseName + "(" +
-                            typeName + " " + baseName.toLowerCase() + ");"
-                    );
+                            typeName + " " + baseName.toLowerCase() + ");");
         }
 
         writer.println(Tab + "}");
