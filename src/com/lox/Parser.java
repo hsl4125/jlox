@@ -111,9 +111,9 @@ public class Parser {
     }
 
     private Stmt ifStatement() {
-        consume(LEFT_BRACE, "Expect '(' after 'if'.");
+        consume(LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();
-        consume(RIGHT_BRACE, "Expect ')' after 'if condition'.");
+        consume(RIGHT_PAREN, "Expect ')' after 'if condition'.");
 
         Stmt thenBranch = statement();
         Stmt elseBranch = null;
