@@ -1,0 +1,14 @@
+class Cake {
+  init() {
+    this.flavor = "pijing";
+  }
+
+  taste() {
+    var adj = "delicious";
+    print "The " + this.flavor + " cake is " + adj + "!";
+  }
+}
+
+var cake = Cake();
+cake.taste();
+
