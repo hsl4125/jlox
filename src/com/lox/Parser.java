@@ -22,11 +22,15 @@ public class Parser {
         return statements;
     }
 
-    // declaration    → funDecl
+    // declaration    → classDecl
+    //               | funDecl
     //               | varDecl
     //               | statement ;
     private Stmt declaration() {
         try {
+            if (match(CLASS)) {
+                return classDeclaration();
+            }
             if (match(FUN)) {
                 return function("function");
             }
@@ -40,11 +44,25 @@ public class Parser {
         return null;
     }
 
+    // classDecl → "class" IDENTIFIER "{" function* "}" ;
+    private Stmt classDeclaration() {
+        Token name = consume(IDENTIFIER, "Expected class name.");
+        consume(LEFT_BRACE, "Expect '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+        while(!check(RIGHT_BRACE) && !isAtEnd()) {
+            methods.add(function("method"));
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after class body.");
+        return new Stmt.Class(name, methods);
+    }
+
     // funDecl        → "fun" function ;
     // function       → IDENTIFIER "(" parameters? ")" block ;
     // parameters     → IDENTIFIER ( "," IDENTIFIER )* ;
     private Stmt.Function function(String kind) {
-        Token name = consume(IDENTIFIER, "Expect" + kind + " name.");
+        Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
         consume(LEFT_PAREN, "Expected '(' after " + kind + " name." );
         List<Token> parameters = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
@@ -222,6 +240,8 @@ public class Parser {
         return assignment();
     }
 
+    // assignment     → ( call "." )? IDENTIFIER "=" assignment
+    //               | logic_or ;
     private Expr assignment() {
         Expr expr = or();
 
@@ -232,6 +252,9 @@ public class Parser {
             if (expr instanceof Expr.Variable) {
                 Token name = ((Expr.Variable)expr).name;
                 return new Expr.Assign(name, value);
+            } else if (expr instanceof Expr.Get) {
+                Expr.Get get = (Expr.Get)expr;
+                return new Expr.Set(get.object, get.name, value);
             }
 
             error(equals, "Invalid assignment target.");
@@ -365,13 +388,16 @@ public class Parser {
         return call();
     }
 
-    // call → primary ( "(" arguments? ")" )* ;
+    // call → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
     private Expr call() {
         Expr expr = primary();
 
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if (match(DOT)) {
+                Token name = consume(IDENTIFIER, "Expected property name after '.'.");
+                expr = new Expr.Get(expr, name);
             } else {
                 break;
             }
@@ -417,6 +443,10 @@ public class Parser {
 
         if (match(IDENTIFIER)) {
             return new Expr.Variable(previous());
+        }
+
+        if (match(THIS)) {
+            return new Expr.This(previous());
         }
 
         if (match(LEFT_PAREN)) {
