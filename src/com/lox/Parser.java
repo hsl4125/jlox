@@ -15,7 +15,7 @@ public class Parser {
     }
 
     List<Stmt> parse() {
-        List<Stmt> statements = new ArrayList<Stmt>();
+        List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
             statements.add(declaration());
         }
@@ -359,8 +359,7 @@ public class Parser {
         if (match(BANG, MINUS)) {
             Token operator = previous();
             Expr right = unary();
-            Expr expr = new Expr.Unary(operator, right);
-            return expr;
+            return new Expr.Unary(operator, right);
         }
 
         return call();
