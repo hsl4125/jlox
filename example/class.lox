@@ -9,6 +9,22 @@ class Cake {
   }
 }
 
+class Ps < Cake {
+  init() {
+    this.flavor2 = "lijing";
+  }
+
+  taste1() {
+    //super.taste();
+    print "lijing love huanghai";
+  }
+}
+
 var cake = Cake();
 cake.taste();
+
+var ps = Ps();
+ps.taste();
+ps.taste1();
+
 

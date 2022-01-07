@@ -48,13 +48,14 @@ public class Parser {
     //                 "{" function* "}" ;
     private Stmt classDeclaration() {
         Token name = consume(IDENTIFIER, "Expected class name.");
-        consume(LEFT_BRACE, "Expect '{' before class body.");
 
         Expr.Variable superClass = null;
         if (match(LESS)) {
             consume(IDENTIFIER, "Expect super class name.");
             superClass = new Expr.Variable(previous());
         }
+
+        consume(LEFT_BRACE, "Expect '{' before class body.");
 
         List<Stmt.Function> methods = new ArrayList<>();
         while(!check(RIGHT_BRACE) && !isAtEnd()) {
